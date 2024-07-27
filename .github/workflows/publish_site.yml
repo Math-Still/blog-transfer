@@ -1,0 +1,47 @@
+name: Publish site on site branch
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    name: Deploy docs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.x
+          
+      - name: Configuration dependencies
+        run: |
+          pip3 install -U -r requirements.txt
+          
+      - name: Verify mkdocs installation
+        run: |
+          mkdocs --version
+
+      - name: Clean old build
+        run: |
+          echo "Cleaning old build..."
+          rm -rf site
+          echo "Old build cleaned."
+
+      - name: Build site
+        run: |
+          mkdocs build
+          ls -la
+          echo "Listing 'site' directory structure:"
+          if [ -d "site" ]; then
+            ls -la site
+          else
+            echo "'site' directory does not exist."
+          fi
+
+      - name: Deploy to GitHub Pages
+        env:
+          MKDOCS_GIT_COMMITTERS_APIKEY: ${{ secrets.MKDOCS_GIT_COMMITTERS_APIKEY  }}  
+        run: mkdocs gh-deploy --force

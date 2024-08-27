@@ -4,3 +4,12 @@ site_dir: 'site'
 
 
 
+
+nav:
+  - 主页: index.md
+  - 文章: 
+    - Linux: index.md
+    - Others: index.md
+  - 说说: taking.md
+  - 致谢: acknowledgement.md
+  - 关于我: about.md
